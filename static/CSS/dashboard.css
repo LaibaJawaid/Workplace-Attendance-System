@@ -1,0 +1,168 @@
+/* -------------------
+    GLOBAL STYLES
+------------------- */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f7fa; /* Light background for main content area (change if needed) */
+    color: #333333; /* Darker text for main body content */
+}
+
+/* -------------------
+    SIDEBAR (Updated for Blue Theme)
+------------------- */
+.sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #007BFF; /* Bright Blue - Primary Theme Color */
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+    padding-top: 70px;
+    z-index: 1000;
+}
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .sidebar ul li {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+            .sidebar ul li a {
+                color: #ffffff;
+                text-decoration: none;
+                font-weight: 500;
+                display: block;
+                padding: 12px 0;
+                transition: all 0.3s ease;
+                border-radius: 8px;
+            }
+
+                .sidebar ul li a:hover {
+                    background-color: #4a9cff; /* Lighter Blue for hover effect */
+                    color: #ffffff; /* Keep text white on hover */
+                }
+
+/* -------------------
+    MAIN CONTENT
+------------------- */
+.main-content {
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+    padding: 30px;
+    min-height: 100vh;
+}
+
+.sidebar.active ~ .main-content {
+    margin-left: 250px;
+}
+
+/* -------------------
+    HEADER (Updated for Blue Theme)
+------------------- */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: #007BFF; /* Bright Blue - Primary Theme Color */
+    padding: 20px 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    margin-bottom: 25px;
+    overflow: hidden; /* Added for pseudo-element */
+}
+
+    /* -------------------
+    CURVY BOTTOM SHAPE (For Header) - NEW CODE
+------------------- */
+    header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px; /* Prevent gap */
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background-color: #f4f7fa; /* Match body background */
+        border-top-left-radius: 50% 100%;
+        border-top-right-radius: 50% 100%;
+        z-index: 1;
+    }
+
+
+.menu-icon {
+    position: absolute;
+    left: 20px;
+    font-size: 26px;
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    z-index: 2; /* Added z-index */
+}
+
+    .menu-icon:hover {
+        color: #ADD8E6; /* Light Blue hover */
+    }
+
+header h2 {
+    font-size: 22px;
+    color: #ffffff; /* White color for text to be visible on Blue Background */
+    font-weight: 600;
+    margin: 0;
+    position: relative; /* Added position */
+    z-index: 2; /* Added z-index */
+}
+
+/* -------------------
+    DASHBOARD CARDS (Updated for Blue Theme)
+------------------- */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.2); /* Subtle Blue shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3); /* Clearer blue hover shadow */
+    }
+
+    .card h3 {
+        color: #007BFF; /* Bright Blue heading */
+        margin-bottom: 12px;
+        font-size: 18px;
+    }
+
+    .card p {
+        font-size: 26px;
+        font-weight: 600;
+        color: #003366; /* Darker Blue text inside card */
+        margin: 5px 0;
+    }
+
+    .card span {
+        font-size: 14px;
+        color: #64748B;
+    }
