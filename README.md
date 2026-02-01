@@ -36,23 +36,24 @@ This version focuses on **core face recognition logic** with a manually structur
 ## 📁 Project Structure (Current v1)
 WORKPLACE_ATTENDANCE_SYSTEM/
 │
-├── database/ # SQLite database files
-├── dataset/ # Employee face datasets
+├── database/ SQLite database files
+├── dataset/ Employee face datasets
+
 │ └── emp_<name>/ # Multiple face images per employee
 │
-├── templates/ # All HTML files
-├── static/ # CSS / JS/assets
+├── templates/ All HTML files
+├── static/ CSS / JS/assets
 │
-├── app.py # Main Flask app
-├── db.py # Database connection logic
-├── create_db.py # Database initialization
-├── bulk_insert.py # Bulk employee insert
-├── enroll.py # Employee enrollment logic
-├── face_detect.py # Face detection using Haar Cascade
-├── embed_service.py # FaceNet embedding generation
-├── update_emp.py # Employee update logic
-├── check_db.py # DB debugging utility
-├── test.py # Testing scripts
+├── app.py - Main Flask app
+├── db.py - Database connection logic
+├── create_db.py - Database initialization
+├── bulk_insert.py - Bulk employee insert
+├── enroll.py - Employee enrollment logic
+├── face_detect.py - Face detection using Haar Cascade
+├── embed_service.py - FaceNet embedding generation
+├── update_emp.py - Employee update logic
+├── check_db.py - DB debugging utility
+├── test.py - Testing scripts
 │
 ├── haarcascade_frontalface_default.xml
 ├── Employee List face sys.csv
@@ -65,11 +66,11 @@ WORKPLACE_ATTENDANCE_SYSTEM/
 - Each employee has a dedicated folder but due to privacy concerns, I haven't uploaded the dataset folder here but you can look at the way we structured our dataset folder as:
   
   dataset/
-└── emp_Ali/
-├── img1.jpg
-├── img2.jpg
-├── img3.jpg
-└── img4.jpg
+- └── emp_Ali/
+- ├── img1.jpg
+- ├── img2.jpg
+- ├── img3.jpg
+- └── img4.jpg
 
 - Images are captured from **different angles** for better recognition
 - Faces are resized to FaceNet’s required input size before embedding
@@ -126,10 +127,10 @@ WORKPLACE_ATTENDANCE_SYSTEM/
 
 ## 🛠 How to Run (Basic)
 
-pip install -r requirements.txt
-python create_db.py
-python app.py
-browser at: http://127.0.0.1:5000
+- pip install -r requirements.txt
+- python create_db.py
+- python app.py
+- browser at: http://127.0.0.1:5000
 
 ----
 
@@ -147,7 +148,7 @@ browser at: http://127.0.0.1:5000
 
 └── v1.0.0 – Initial working prototype
 └── v2.0.0 (Planned) – Production-ready architecture
-Still updating for v2!
+- Still updating for v2!
 
 -----
 
