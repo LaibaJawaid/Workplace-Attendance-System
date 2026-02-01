@@ -35,29 +35,29 @@ This version focuses on **core face recognition logic** with a manually structur
 
 ## 📁 Project Structure (Current v1)
 WORKPLACE_ATTENDANCE_SYSTEM/
-│
-├── database/ SQLite database files
-├── dataset/ Employee face datasets
+- │
+- ├── database/ SQLite database files
+- ├── dataset/ Employee face datasets
 
-│ └── emp_<name>/ # Multiple face images per employee
-│
-├── templates/ All HTML files
-├── static/ CSS / JS/assets
-│
-├── app.py - Main Flask app
-├── db.py - Database connection logic
-├── create_db.py - Database initialization
-├── bulk_insert.py - Bulk employee insert
-├── enroll.py - Employee enrollment logic
-├── face_detect.py - Face detection using Haar Cascade
-├── embed_service.py - FaceNet embedding generation
-├── update_emp.py - Employee update logic
-├── check_db.py - DB debugging utility
-├── test.py - Testing scripts
-│
-├── haarcascade_frontalface_default.xml
-├── Employee List face sys.csv
-└── temp_capture.jpg
+- │ └── emp_<name>/ # Multiple face images per employee
+- │
+- ├── templates/ All HTML files
+- ├── static/ CSS / JS/assets
+- │
+- ├── app.py - Main Flask app
+- ├── db.py - Database connection logic
+- ├── create_db.py - Database initialization
+- ├── bulk_insert.py - Bulk employee insert
+- ├── enroll.py - Employee enrollment logic
+- ├── face_detect.py - Face detection using Haar Cascade
+- ├── embed_service.py - FaceNet embedding generation
+- ├── update_emp.py - Employee update logic
+- ├── check_db.py - DB debugging utility
+- ├── test.py - Testing scripts
+- │
+- ├── haarcascade_frontalface_default.xml
+- ├── Employee List face sys.csv
+- └── temp_capture.jpg
 
 ---
 
@@ -146,8 +146,8 @@ WORKPLACE_ATTENDANCE_SYSTEM/
 
 ## Versioning
 
-└── v1.0.0 – Initial working prototype
-└── v2.0.0 (Planned) – Production-ready architecture
+- └── v1.0.0 – Initial working prototype
+- └── v2.0.0 (Planned) – Production-ready architecture
 - Still updating for v2!
 
 -----
