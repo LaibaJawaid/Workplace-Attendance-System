@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Attendance Overview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            700: '#1e293b',
+                            800: '#0f172a',
+                            900: '#0a101f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <div class="flex items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border-l-8 border-navy-800">
+            <div>
+                <h1 class="text-2xl font-bold text-navy-800">Attendance Overview</h1>
+                <p class="text-gray-500 text-sm">Department-wise daily tracking</p>
+            </div>
+            <div class="bg-navy-800 text-white p-3 rounded-xl">
+                <i class="fas fa-calendar-check text-xl"></i>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            {% for dept, employees in dept_data.items() %}
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+
+                <button onclick="toggleDepartment('dept-{{ loop.index }}', 'icon-{{ loop.index }}')"
+                        class="w-full flex items-center justify-between p-5 bg-white hover:bg-gray-50 transition-all text-left">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-navy-800 text-white rounded-full flex items-center justify-center font-bold">
+                            {{ dept[0]|upper }}
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-navy-800 text-lg">{{ dept }}</h2>
+                            <p class="text-xs text-gray-500">{{ employees|length }} Total Members</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="hidden sm:inline-block bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded-md font-bold uppercase">Live</span>
+                        <i id="icon-{{ loop.index }}" class="fas fa-chevron-down text-navy-800 transition-transform duration-300"></i>
+                    </div>
+                </button>
+
+                <div id="dept-{{ loop.index }}" class="hidden bg-gray-50 border-t border-gray-100">
+                    <div class="p-4">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="text-gray-400 text-[11px] uppercase tracking-wider border-b border-gray-200">
+                                    <th class="pb-2 pl-2">Employee Name</th>
+                                    <th class="pb-2 text-right pr-2">Current Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                {% for emp in employees %}
+                                <tr class="hover:bg-white transition-colors">
+                                    <td class="py-3 pl-2">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-[10px] font-bold text-gray-600">
+                                                {{ emp.name[:2]|upper }}
+                                            </div>
+                                            <span class="text-sm font-medium text-navy-800">{{ emp.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 text-right pr-2">
+                                        {% if emp.status == 'Present' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">
+                                            <span class="w-1.5 h-1.5 mr-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                            Present
+                                        </span>
+                                        {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800">
+                                            <span class="w-1.5 h-1.5 mr-1.5 bg-red-500 rounded-full"></span>
+                                            Absent
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="{{ url_for('admin_dashboard') }}" class="inline-flex items-center text-navy-800 font-semibold hover:underline">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function toggleDepartment(id, iconId) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(iconId);
+
+            // Toggle visibility
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+    </script>
+
+</body>
+</html>

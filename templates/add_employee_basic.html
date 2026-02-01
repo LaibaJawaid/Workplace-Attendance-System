@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* ===== NAVY BLUE & WHITE COLOR THEME ===== */
+    /* Primary Colors:
+       - Navy Blue: #1A2B5C (Main theme color)
+       - White: #FFFFFF (Background and cards)
+       - Light Blue: #3A7BFF (Accent for buttons and interactive elements)
+       - Light Gray: #F5F7FA (Subtle backgrounds)
+    */
+
+    .add-employee-container {
+        padding: 25px;
+        background-color: #F8FAFE;
+        min-height: calc(100vh - 100px);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    /* Header Section - Compact */
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #E8ECF5;
+    }
+
+    .form-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1A2B5C;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .form-title i {
+            color: #3A7BFF;
+            font-size: 22px;
+        }
+
+    .back-btn {
+        background-color: #F8FAFE;
+        color: #1A2B5C;
+        border: 1px solid #E8ECF5;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .back-btn:hover {
+            background-color: #1A2B5C;
+            color: white;
+            transform: translateX(-3px);
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(26, 43, 92, 0.2);
+        }
+
+    /* Compact Form Container */
+    .form-container {
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 6px 20px rgba(26, 43, 92, 0.08);
+        max-width: 700px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    /* Compact Form Step */
+    .form-step {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #E8ECF5;
+    }
+
+    .step-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-right: 20px;
+    }
+
+    .step-number {
+        width: 32px;
+        height: 32px;
+        background-color: #1A2B5C;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .step-text {
+        font-weight: 600;
+        color: #1A2B5C;
+        font-size: 14px;
+    }
+
+    .step-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1A2B5C;
+    }
+
+    /* Compact Form Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+    .form-label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #1A2B5C;
+        font-size: 14px;
+    }
+
+        .form-label i {
+            margin-right: 6px;
+            color: #3A7BFF;
+            font-size: 13px;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1.5px solid #E8ECF5;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        font-family: 'Inter', sans-serif;
+        background-color: #F8FAFE;
+        color: #1A2B5C;
+    }
+
+        .form-control:focus {
+            border-color: #3A7BFF;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(58, 123, 255, 0.15);
+            background-color: #FFFFFF;
+        }
+
+        .form-control::placeholder {
+            color: #94A3B8;
+            font-size: 13px;
+        }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%231A2B5C' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 35px;
+        background-size: 12px;
+    }
+
+    /* Compact Form Footer */
+    .form-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 1px solid #E8ECF5;
+    }
+
+    .form-note {
+        font-size: 13px;
+        color: #64748B;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .form-note i {
+            color: #3A7BFF;
+            font-size: 13px;
+        }
+
+    .btn-next {
+        background-color: #1A2B5C;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(26, 43, 92, 0.2);
+    }
+
+        .btn-next:hover {
+            background-color: #3A7BFF;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(58, 123, 255, 0.25);
+        }
+
+        .btn-next i {
+            font-size: 12px;
+        }
+
+    /* Required Field Indicator */
+    .required::after {
+        content: " *";
+        color: #DC2626;
+        font-size: 14px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .add-employee-container {
+            padding: 15px;
+        }
+
+        .form-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .form-container {
+            padding: 20px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 1;
+        }
+
+        .form-step {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .form-footer {
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        .btn-next {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .form-title {
+            font-size: 20px;
+        }
+
+        .step-title {
+            font-size: 16px;
+        }
+
+        .form-container {
+            padding: 15px;
+        }
+
+        .form-control {
+            padding: 10px;
+            font-size: 13px;
+        }
+    }
+
+    /* Compact animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-group {
+        animation: fadeIn 0.2s ease forwards;
+    }
+
+        /* Compact spacing for better alignment */
+        .form-group:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+</style>
+
+<div class="add-employee-container">
+    <!-- Form Container -->
+    <div class="form-container">
+        <!-- Header Section -->
+        <div class="form-header">
+            <div class="form-title">
+                <i class="fas fa-user-plus"></i>
+                <span>Add New Employee</span>
+            </div>
+
+            <a href="{{ url_for('employees') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Employees
+            </a>
+        </div>
+
+        <!-- Form Step Indicator -->
+        <div class="form-step">
+            <div class="step-indicator">
+                <div class="step-number">1</div>
+                <div class="step-text">Step 1 of 3</div>
+            </div>
+            <div class="step-title">Basic Information</div>
+        </div>
+
+        <form method="POST">
+            <div class="form-grid">
+                <!-- Employee ID -->
+                <div class="form-group">
+                    <label class="form-label required">
+                        <i class="fas fa-id-badge"></i> Employee ID
+                    </label>
+                    <input type="text"
+                           name="employee_id"
+                           class="form-control"
+                           value="{{ next_id }}"
+                           readonly
+                           style="background-color: #e9ecef; cursor: not-allowed;"
+                           title="This ID is auto-generated and cannot be changed">
+                </div>
+
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label class="form-label required">
+                        <i class="fas fa-user"></i> Full Name
+                    </label>
+                    <input type="text"
+                           name="full_name"
+                           class="form-control"
+                           placeholder="John Smith"
+                           required>
+                </div>
+
+                <!-- Father/Guardian Name -->
+                <div class="form-group full-width">
+                    <label class="form-label">
+                        <i class="fas fa-users"></i> Father / Guardian Name
+                    </label>
+                    <input type="text"
+                           name="father_name"
+                           class="form-control"
+                           placeholder="Robert Smith">
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-calendar-alt"></i> Date of Birth
+                    </label>
+                    <input type="date"
+                           name="dob"
+                           class="form-control"
+                           max="{{ today }}">
+                </div>
+
+                <!-- Gender -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-venus-mars"></i> Gender
+                    </label>
+                    <select name="gender" class="form-control">
+                        <option value="" disabled selected>Select gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Form Footer -->
+            <div class="form-footer">
+                <div class="form-note">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Fields marked with <span style="color:#DC2626;">*</span> are required</span>
+                </div>
+                <button type="submit" class="btn-next">
+                    Next Step
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Set max date for Date of Birth (18 years ago)
+    document.addEventListener('DOMContentLoaded', function () {
+        const dobInput = document.querySelector('input[name="dob"]');
+        const today = new Date();
+        const maxDate = new Date();
+        maxDate.setFullYear(today.getFullYear() - 18);
+
+        // Format date as YYYY-MM-DD
+        const formattedDate = maxDate.toISOString().split('T')[0];
+        if (dobInput) {
+            dobInput.setAttribute('max', formattedDate);
+        }
+
+        // Auto-focus on first input
+        const firstInput = document.querySelector('input[name="employee_id"]');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    });
+
+    // Form validation
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            const employeeId = document.querySelector('input[name="employee_id"]');
+            const fullName = document.querySelector('input[name="full_name"]');
+
+            if (!employeeId || !fullName) {
+                e.preventDefault();
+                alert('Please fill in all required fields (Employee ID and Full Name).');
+                return false;
+            }
+
+            if (!employeeId.value.trim() || !fullName.value.trim()) {
+                e.preventDefault();
+                alert('Please fill in all required fields (Employee ID and Full Name).');
+                return false;
+            }
+
+            // Additional validation for employee ID format
+            const employeeIdRegex = /^[A-Za-z0-9\-]+$/;
+            if (!employeeIdRegex.test(employeeId.value.trim())) {
+                e.preventDefault();
+                alert('Employee ID can only contain letters, numbers, and hyphens.');
+                return false;
+            }
+
+            // Show loading state
+            const submitBtn = document.querySelector('.btn-next');
+            if (submitBtn) {
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.disabled = true;
+
+                // Revert after 5 seconds in case of error
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 5000);
+            }
+        });
+    }
+
+    // Add input validation styling
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('blur', function () {
+            if (this.required && !this.value.trim()) {
+                this.style.borderColor = '#DC2626';
+            } else {
+                this.style.borderColor = '';
+            }
+        });
+
+        input.addEventListener('input', function () {
+            this.style.borderColor = '';
+        });
+    });
+</script>
+{% endblock %}

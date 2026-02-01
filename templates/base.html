@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceLog | Administrative Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ===== GLOBAL STYLES & COLOR THEME ===== */
+        :root {
+            --navy-blue: #1A2B5C;
+            --light-blue: #3A7BFF;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFE;
+            --text-color: #1A2B5C;
+            --secondary-text: #64748B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== SIDEBAR STYLING ===== */
+        .sidebar {
+            width: 240px;
+            background-color: var(--navy-blue);
+            color: var(--white);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 25px 0;
+            box-shadow: 5px 0 15px rgba(26, 43, 92, 0.1);
+            z-index: 1000; /* Increased z-index */
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .sidebar-title i {
+                color: var(--light-blue);
+                font-size: 22px;
+            }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 15px;
+        }
+
+            .sidebar-menu li {
+                margin-bottom: 8px;
+            }
+
+            .sidebar-menu a {
+                color: rgba(255, 255, 255, 0.85);
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                padding: 14px 15px;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+                font-weight: 500;
+                font-size: 15px;
+            }
+
+                .sidebar-menu a i {
+                    margin-right: 12px;
+                    font-size: 18px;
+                    width: 24px;
+                    text-align: center;
+                }
+
+                .sidebar-menu a:hover {
+                    background-color: rgba(255, 255, 255, 0.1);
+                    color: var(--white);
+                    transform: translateX(5px);
+                }
+
+                .sidebar-menu a.active {
+                    background-color: var(--light-blue);
+                    color: var(--white);
+                    box-shadow: 0 4px 12px rgba(58, 123, 255, 0.3);
+                    transform: none;
+                }
+
+                .sidebar-menu a.logout {
+                    margin-top: 30px;
+                    background-color: rgba(220, 38, 38, 0.1);
+                    color: #FCA5A5;
+                }
+
+                    .sidebar-menu a.logout:hover {
+                        background-color: rgba(220, 38, 38, 0.2);
+                        color: var(--white);
+                    }
+
+        /* ===== MAIN CONTENT & HEADER STYLING ===== */
+        .main-content {
+            margin-left: 240px; /* Default sidebar width */
+            flex: 1;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            /* Changed padding here to ensure icon is not cut */
+            padding: 0 30px 20px 30px;
+            border-bottom: 1px solid #E8ECF5;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .header-title i {
+                color: var(--light-blue);
+            }
+
+        /* MOBILE TOGGLE BUTTON (Hamburger Icon) */
+        .mobile-toggle {
+            display: flex !important;
+            position: fixed;
+            top: 25px;
+            z-index: 2000; /* Isko sab se upar rakhein */
+            background-color: var(--navy-blue);
+            color: var(--white);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: left 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* 1. Hamburger ko desktop par dikhane ke liye ye wala block update karein */
+        @media (min-width: 769px) {
+            .mobile-toggle {
+                display: flex !important; /* Force display on desktop */
+                position: fixed;
+                left: 20px; /* Sidebar ke bahar ki position */
+                top: 25px;
+                z-index: 1100; /* Sidebar (1000) se upar */
+                transition: all 0.3s ease;
+            }
+        }
+
+        /* 2. Jab Sidebar open ho (Desktop), toh hamburger ko aage move karein */
+        /* Is line ko CSS mein kahi bhi add kar dein */
+        /* Jab sidebar KHULA ho toh button 255px aage jaye */
+        .sidebar:not(.closed) ~ .main-content #mobileToggle {
+            left: 255px;
+        }
+
+        /* Jab sidebar CLOSED ho toh button wapis 20px par aa jaye */
+        .sidebar.closed ~ .main-content #mobileToggle {
+            left: 20px;
+        }
+
+        /* 3. Main content ki padding adjust karein taake icon table ke upar na aaye */
+        .top-header {
+            padding-left: 80px !important; /* Hamburger ke liye jagah */
+        }
+        /* Sidebar CLOSED state on Desktop (When toggle is clicked) */
+        .sidebar.closed {
+            width: 0;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        .main-content.sidebar-closed {
+            margin-left: 0;
+        }
+
+
+        /* ===== RESPONSIVE DESIGN (Mobile/Tablet) ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                /* Sidebar hidden by default on mobile */
+                transform: translateX(-100%);
+                width: 260px; /* Mobile width */
+            }
+
+                .sidebar.active {
+                    /* Sidebar opens when 'active' class is added by JS */
+                    transform: translateX(0);
+                    box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+                }
+
+            .main-content {
+                margin-left: 0; /* No margin on mobile */
+                padding: 20px;
+            }
+
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                /* Mobile padding */
+                padding: 20px 20px 10px 20px;
+            }
+        }
+        /* ... (baki mobile styles yahan honge agar zaroori hon) ... */
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">
+                <i class="fas fa-user-shield"></i>
+                <span>Admin Panel</span>
+            </div>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+
+            <li><a href="{{ url_for('attendance_summary') }}" class="{% if request.endpoint == 'attendance_summary' %}active{% endif %}"><i class="fas fa-calendar-check"></i>Attendance Overview</a></li>
+
+            <li><a href="{{ url_for('departments') }}" class="{% if request.endpoint == 'departments' %}active{% endif %}"><i class="fas fa-building"></i>Departments</a></li>
+            <li><a href="{{ url_for('employees') }}" class="{% if request.endpoint == 'employees' %}active{% endif %}"><i class="fas fa-users"></i>Employees</a></li>
+            <li><a href="{{ url_for('reports') }}" class="{% if request.endpoint == 'reports' %}active{% endif %}"><i class="fas fa-chart-bar"></i>Reports</a></li>
+            <li><a href="{{ url_for('logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <div class="top-header">
+            <div style="display: flex; align-items: center;">
+                <button class="mobile-toggle" id="mobileToggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <i class="fas fa-chart-line"></i>
+                    <span>{% block header %}Workplace AI Attendance System{% endblock %}</span>
+                </div>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <div>
+                    <div class="user-name">Admin User</div>
+                    <div class="user-role">System Administrator</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const mobileToggle = document.getElementById('mobileToggle');
+
+        function toggleSidebar() {
+            // 1. Sidebar Toggle Logic
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('active');
+            } else {
+                sidebar.classList.toggle('closed');
+                mainContent.classList.toggle('sidebar-closed');
+            }
+
+            // 2. Button Position logic
+            const isSidebarOpen = (window.innerWidth <= 768 && sidebar.classList.contains('active')) ||
+                (window.innerWidth > 768 && !sidebar.classList.contains('closed'));
+
+            if (isSidebarOpen && window.innerWidth > 768) {
+                mobileToggle.style.left = "255px";
+            } else {
+                mobileToggle.style.left = "20px";
+            }
+        }
+
+        // Click event (Sirf aik baar)
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', toggleSidebar);
+        }
+
+        // Mobile link click handling (Sidebar band karne ke liye)
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', function () {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.style.left = "20px";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workplace AI Attendance System - Role Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ===== NAVY BLUE & WHITE COLOR THEME ===== */
+        /* Primary Colors:
+           - Navy Blue: #1A2B5C (Main theme color)
+           - White: #FFFFFF (Background and cards)
+           - Light Blue: #3A7BFF (Accent for buttons and interactive elements)
+           - Light Gray: #F5F7FA (Subtle backgrounds)
+           - Dark Navy: #0F1A3A (Darker shade for contrast)
+        */
+
+        /* Base & Background */
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #FFFFFF;
+            color: #333333;
+            padding: 20px;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 10% 20%, rgba(245, 247, 250, 0.8) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(245, 247, 250, 0.6) 0%, transparent 20%);
+        }
+
+        /* Top Bar / Header */
+        .header {
+            background-color: #1A2B5C; /* Navy Blue */
+            color: #FFFFFF;
+            width: 100%;
+            padding: 18px 40px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(26, 43, 92, 0.15);
+            border-bottom: 3px solid #3A7BFF;
+        }
+
+        /* Centered System Title */
+        .header-title {
+            font-size: 22px;
+            font-weight: 700;
+            grid-column: 2;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        /* Date on the Right */
+        .header-date {
+            grid-column: 3;
+            text-align: right;
+            font-size: 14px;
+            color: #E0E7FF;
+            font-weight: 500;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-top: 120px;
+            padding-bottom: 50px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* Main Heading */
+        .welcome-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #1A2B5C;
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+            .welcome-title::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100px;
+                height: 4px;
+                background: linear-gradient(90deg, #3A7BFF, #1A2B5C);
+                border-radius: 2px;
+            }
+
+        /* Card Container */
+        .card-container {
+            display: flex;
+            gap: 40px;
+            max-width: 900px;
+            width: 100%;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Role Card Style */
+        .role-card {
+            flex: 1;
+            background: #FFFFFF;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(26, 43, 92, 0.08);
+            text-align: center;
+            border: 2px solid #E8ECF5;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+            /* Navy blue top accent border */
+            .role-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 6px;
+                background: linear-gradient(90deg, #1A2B5C, #3A7BFF);
+                transition: height 0.3s ease;
+            }
+
+            /* Hover Effect for the Card */
+            .role-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(26, 43, 92, 0.15);
+                border-color: #3A7BFF;
+            }
+
+                .role-card:hover::before {
+                    height: 8px;
+                }
+
+            /* Card Icon Styling */
+            .role-card i {
+                font-size: 56px;
+                color: #1A2B5C;
+                margin-bottom: 20px;
+                display: block;
+                transition: all 0.3s ease;
+            }
+
+            .role-card:hover i {
+                color: #3A7BFF;
+                transform: scale(1.1);
+            }
+
+            /* Card Title */
+            .role-card h3 {
+                color: #1A2B5C;
+                font-weight: 700;
+                font-size: 24px;
+                margin-bottom: 12px;
+            }
+
+            /* Card Description */
+            .role-card p {
+                color: #5A6478;
+                font-size: 16px;
+                margin-bottom: 30px;
+                line-height: 1.6;
+                min-height: 48px;
+            }
+
+            /* Button Styling */
+            .role-card button {
+                width: 85%;
+                padding: 14px;
+                background-color: #1A2B5C;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                letter-spacing: 0.5px;
+                position: relative;
+                overflow: hidden;
+                z-index: 1;
+            }
+
+                .role-card button::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                    transition: left 0.7s ease;
+                    z-index: -1;
+                }
+
+                .role-card button:hover {
+                    background-color: #3A7BFF;
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 15px rgba(58, 123, 255, 0.3);
+                }
+
+                    .role-card button:hover::before {
+                        left: 100%;
+                    }
+
+        /* Footer */
+        .footer {
+            background-color: #1A2B5C;
+            color: #D0D9FF;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            font-size: 14px;
+            font-weight: 500;
+            border-top: 3px solid #3A7BFF;
+        }
+
+        /* Additional decorative element */
+        .navy-circle {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(26, 43, 92, 0.03);
+            z-index: -1;
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: 15%;
+            right: 8%;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 992px) {
+            .card-container {
+                max-width: 700px;
+                gap: 30px;
+            }
+
+            .role-card {
+                padding: 35px 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-container {
+                flex-direction: column;
+                gap: 25px;
+                max-width: 500px;
+            }
+
+            .header {
+                padding: 15px 25px;
+                grid-template-columns: 1fr auto;
+            }
+
+            .header-title {
+                grid-column: 1;
+                font-size: 20px;
+            }
+
+            .header-date {
+                grid-column: 2;
+                font-size: 13px;
+            }
+
+            .welcome-title {
+                font-size: 32px;
+                margin-bottom: 40px;
+            }
+
+            .role-card {
+                padding: 30px 20px;
+            }
+
+                .role-card button {
+                    width: 90%;
+                }
+
+            .navy-circle {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-title {
+                font-size: 28px;
+            }
+
+            .header {
+                padding: 12px 20px;
+            }
+
+            .main-content {
+                padding-top: 100px;
+            }
+
+            .footer {
+                position: relative;
+                margin-top: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative background elements -->
+    <div class="navy-circle circle-1"></div>
+    <div class="navy-circle circle-2"></div>
+
+    <div class="header">
+        <div class="header-date">Friday, Dec 12, 2025</div>
+        <div class="header-title">Workplace AI Attendance System</div>
+    </div>
+
+    <div class="main-content">
+        <div class="welcome-title">Welcome to the Portal</div>
+
+        <div class="card-container">
+            <div class="role-card" onclick="document.getElementById('employee-form').submit();">
+                <i class="fas fa-user-tie"></i>
+                <h3>Employee Access</h3>
+                <p>Log in to mark attendance or view your personal records and history.</p>
+                <form action="/employee-login" method="get" id="employee-form">
+                    <button type="submit">Employee Login</button>
+                </form>
+            </div>
+
+            <div class="role-card" onclick="document.getElementById('admin-form').submit();">
+                <i class="fas fa-user-shield"></i>
+                <h3>Administrator Panel</h3>
+                <p>Access the dashboard to manage users, view reports, and configure the system.</p>
+                <form action="/admin-login" method="get" id="admin-form">
+                    <button type="submit">Admin Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        © LA Products (AI Attendance System). All Rights Reserved
+    </div>
+</body>
+</html>

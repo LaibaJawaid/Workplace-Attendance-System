@@ -1,0 +1,381 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceLog Attendance System | Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== NAVY BLUE & WHITE COLOR THEME ===== */
+        /* Primary Colors:
+           - Navy Blue: #1A2B5C (Main theme color)
+           - White: #FFFFFF (Background and cards)
+           - Light Blue: #3A7BFF (Accent for buttons and interactive elements)
+           - Light Gray: #F5F7FA (Subtle backgrounds)
+        */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #1A2B5C;
+            background-image: radial-gradient(circle at 20% 80%, rgba(58, 123, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(26, 43, 92, 0.05) 0%, transparent 50%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Decorative background elements */
+        .navy-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(26, 43, 92, 0.03);
+            z-index: -1;
+        }
+
+        .circle-1 {
+            width: 250px;
+            height: 250px;
+            top: 10%;
+            right: 10%;
+        }
+
+        .circle-2 {
+            width: 180px;
+            height: 180px;
+            bottom: 15%;
+            left: 10%;
+        }
+
+        /* System title outside the card */
+        .system-title {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: #1A2B5C;
+            text-align: center;
+            letter-spacing: -0.5px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+            .system-title::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 4px;
+                background: linear-gradient(90deg, #3A7BFF, #1A2B5C);
+                border-radius: 2px;
+            }
+
+        /* Login card styling */
+        .login-card {
+            background: #FFFFFF;
+            padding: 45px 40px;
+            border-radius: 18px;
+            box-shadow: 0 12px 40px rgba(26, 43, 92, 0.12);
+            width: 420px;
+            text-align: center;
+            border-top: 5px solid #1A2B5C;
+            border: 1px solid #E8ECF5;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .login-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5px;
+                background: linear-gradient(90deg, #1A2B5C, #3A7BFF);
+            }
+
+            .login-card:hover {
+                box-shadow: 0 15px 45px rgba(26, 43, 92, 0.15);
+            }
+
+        h2 {
+            color: #1A2B5C;
+            font-weight: 700;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        /* Form group styling */
+        .form-group {
+            margin-bottom: 22px;
+            text-align: left;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #1A2B5C;
+                font-size: 15px;
+            }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #E8ECF5;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFE;
+        }
+
+            input:focus {
+                border-color: #3A7BFF;
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(58, 123, 255, 0.2);
+                background-color: #FFFFFF;
+            }
+
+            input::placeholder {
+                color: #94A3B8;
+            }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background-color: #1A2B5C;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 6px 15px rgba(26, 43, 92, 0.2);
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            button::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.7s ease;
+            }
+
+            button:hover {
+                background-color: #3A7BFF;
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(58, 123, 255, 0.3);
+            }
+
+                button:hover::before {
+                    left: 100%;
+                }
+
+            button:active {
+                transform: translateY(-1px);
+            }
+
+        /* Flash Message Styling */
+        .flash {
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: white;
+            font-weight: 500;
+            text-align: center;
+            font-size: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .flash.success {
+            background-color: #059669;
+            border-left: 4px solid #047857;
+        }
+
+        .flash.danger {
+            background-color: #DC2626;
+            border-left: 4px solid #B91C1C;
+        }
+
+        .flash.warning {
+            background-color: #F59E0B;
+            color: #1E293B;
+            border-left: 4px solid #D97706;
+        }
+
+        /* Back link styling */
+        .back-link {
+            margin-top: 25px;
+            font-size: 15px;
+            color: #64748B;
+            text-align: center;
+        }
+
+            .back-link a {
+                color: #1A2B5C;
+                text-decoration: none;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                transition: all 0.3s ease;
+                padding: 8px 16px;
+                border-radius: 8px;
+                background-color: #F8FAFE;
+            }
+
+                .back-link a:hover {
+                    color: #3A7BFF;
+                    background-color: #F1F5FF;
+                    transform: translateX(-3px);
+                }
+
+                .back-link a i {
+                    margin-right: 8px;
+                    transition: all 0.3s ease;
+                }
+
+                .back-link a:hover i {
+                    transform: translateX(-3px);
+                }
+
+        /* Footer note */
+        .footer-note {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #94A3B8;
+            text-align: center;
+            max-width: 420px;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .system-title {
+                font-size: 28px;
+                margin-bottom: 25px;
+            }
+
+            .login-card {
+                width: 90%;
+                padding: 35px 25px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            input {
+                padding: 14px;
+            }
+
+            button {
+                padding: 15px;
+                font-size: 16px;
+            }
+
+            .navy-circle {
+                display: none;
+            }
+
+            .footer-note {
+                width: 90%;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .system-title {
+                font-size: 24px;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Decorative background elements -->
+    <div class="navy-circle circle-1"></div>
+    <div class="navy-circle circle-2"></div>
+
+    <!-- Title outside the card -->
+    <div class="system-title">FaceLog Attendance System</div>
+
+    <!-- Login form -->
+    <form class="login-card" action="/admin-login" method="POST">
+        <h2>Admin Login</h2>
+
+        <!-- Flash messages (Added proper styling classes) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+
+        <button type="submit">Login to Admin Panel</button>
+
+        <!-- Link back to choose role page -->
+        <div class="back-link">
+            <a href="{{ url_for('choose_role') }}">
+                <i class="fas fa-arrow-left"></i> Back to Role Selection
+            </a>
+        </div>
+    </form>
+
+    <!-- Footer note -->
+    <div class="footer-note">
+        <p><i class="fas fa-shield-alt" style="color: #1A2B5C; margin-right: 5px;"></i> Secure access for authorized administrators only</p>
+    </div>
+</body>
+</html>

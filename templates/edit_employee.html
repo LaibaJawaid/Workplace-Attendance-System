@@ -1,0 +1,487 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    /* Navy Blue & White Theme */
+    :root {
+        --navy-primary: #0a1f44;
+        --navy-secondary: #1a365d;
+        --navy-light: #2d4a8a;
+        --accent-blue: #2563eb;
+        --accent-light: #3b82f6;
+        --white: #ffffff;
+        --off-white: #f8fafc;
+        --gray-light: #e2e8f0;
+        --gray-medium: #94a3b8;
+    }
+
+    body {
+        background: linear-gradient(135deg, #f0f4f8 0%, #e6f0ff 100%);
+        min-height: 100vh;
+        padding-bottom: 2rem;
+    }
+
+    .edit-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .profile-card {
+        background: var(--white);
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(10, 31, 68, 0.12);
+        border: 1px solid rgba(10, 31, 68, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+        .profile-card:hover {
+            transform: translateY(-2px);
+        }
+
+    .card-header {
+        background: linear-gradient(135deg, var(--navy-primary) 0%, var(--navy-secondary) 100%);
+        color: var(--white);
+        padding: 2.5rem 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+        }
+
+    .employee-id-badge {
+        background: var(--accent-blue);
+        color: white;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .section-divider {
+        display: flex;
+        align-items: center;
+        margin: 2.5rem 0 1.5rem;
+        color: var(--navy-primary);
+    }
+
+        .section-divider h5 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--navy-primary);
+        }
+
+            .section-divider h5 i {
+                background: var(--navy-primary);
+                color: white;
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.9rem;
+            }
+
+    .divider-line {
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(90deg, var(--navy-primary) 0%, transparent 100%);
+        margin-left: 1rem;
+        opacity: 0.2;
+    }
+
+    .form-group-custom {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-custom {
+        color: var(--navy-secondary);
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .form-label-custom .required {
+            color: #ef4444;
+            font-size: 1.2rem;
+        }
+
+    .form-control-custom {
+        border: 2px solid var(--gray-light);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: var(--off-white);
+    }
+
+        .form-control-custom:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: var(--white);
+        }
+
+        .form-control-custom:disabled,
+        .form-control-custom[readonly] {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+    .input-group-custom .input-group-text {
+        background: var(--navy-primary);
+        color: white;
+        border: 2px solid var(--navy-primary);
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        font-weight: 600;
+    }
+
+    .input-group-custom .form-control {
+        border-radius: 0 12px 12px 0;
+    }
+
+    .btn-action-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding-top: 2rem;
+        margin-top: 2rem;
+        border-top: 1px solid var(--gray-light);
+    }
+
+    .btn-cancel {
+        background: transparent;
+        border: 2px solid var(--gray-medium);
+        color: var(--gray-medium);
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-cancel:hover {
+            background: var(--gray-light);
+            border-color: var(--gray-medium);
+            color: var(--navy-primary);
+            transform: translateY(-2px);
+        }
+
+    .btn-update {
+        background: linear-gradient(135deg, var(--navy-primary) 0%, var(--navy-secondary) 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: 0 4px 15px rgba(10, 31, 68, 0.2);
+    }
+
+        .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 31, 68, 0.3);
+            background: linear-gradient(135deg, var(--navy-secondary) 0%, var(--navy-light) 100%);
+            color: white;
+        }
+
+    .info-box {
+        background: linear-gradient(135deg, #f0f7ff 0%, #e6f0ff 100%);
+        border: 2px dashed var(--accent-light);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-top: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+        .info-box i {
+            color: var(--accent-blue);
+            font-size: 1.5rem;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: var(--navy-secondary);
+            font-size: 0.9rem;
+        }
+
+    @media (max-width: 768px) {
+        .edit-container {
+            padding: 0 1rem;
+        }
+
+        .card-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .btn-action-group {
+            flex-direction: column;
+        }
+
+        .btn-cancel, .btn-update {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="edit-container mt-4">
+    <div class="profile-card">
+        <!-- Header -->
+        <div class="card-header">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                <div>
+                    <h1 class="h3 mb-2 fw-bold">
+                        <i class="fas fa-user-edit me-2"></i>Edit Employee Profile
+                    </h1>
+                    <p class="mb-0 opacity-75">Update employee information and details</p>
+                </div>
+                <div class="employee-id-badge">
+                    <i class="fas fa-id-card"></i>
+                    <span>EMP ID: {{ emp['Employee ID'] }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Content -->
+        <div class="card-body p-4 p-md-5">
+            <form action="{{ url_for('update_employee') }}" method="POST">
+                <input type="hidden" name="employee_code" value="{{ emp.employee_code }}">
+
+                <!-- Personal Information Section -->
+                <div class="section-divider">
+                    <h5><i class="fas fa-user"></i> Personal Information</h5>
+                    <div class="divider-line"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-group-custom">
+                        <label class="form-label-custom">
+                            <span>Full Name</span>
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" name="full_name" class="form-control form-control-custom"
+                               value="{{ emp.name }}" required placeholder="Enter full name">
+                    </div>
+                    <div class="col-md-6 form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-users"></i>
+                            <span>Father / Guardian Name</span>
+                        </label>
+                        <input type="text" name="father_name" class="form-control form-control-custom"
+                               value="{{ emp.father_name }}" placeholder="Father's name">
+                    </div>
+                    <div class="col-md-4 form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Date of Birth</span>
+                        </label>
+                        <input type="date" name="dob" class="form-control form-control-custom" value="{{ emp.dob }}">
+                    </div>
+                    <div class="col-md-4 form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-venus-mars"></i>
+                            <span>Gender</span>
+                        </label>
+                        <select name="gender" class="form-select form-control-custom">
+                            <option value="Male" {% if emp.gender=='Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if emp.gender=='Female' %}selected{% endif %}>Female</option>
+                            <option value="Other" {% if emp.gender=='Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-fingerprint"></i>
+                            <span>Employee Code</span>
+                        </label>
+                        <input type="text" class="form-control form-control-custom"
+                               value="{{ emp.employee_code }}" readonly>
+                    </div>
+                </div>
+
+                <!-- Job Details Section -->
+                <div class="section-divider">
+                    <h5><i class="fas fa-briefcase"></i> Job Details</h5>
+                    <div class="divider-line"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 form-group-custom">
+                        <label class="form-label-custom">
+                            <span>Department</span>
+                            <span class="required">*</span>
+                        </label>
+                        <select name="department" class="form-select form-control-custom" required>
+                            <option value="">Select Department</option>
+                            {% for d in departments %}
+                            <option value="{{ d.name }}" {% if d.name==emp.department %}selected{% endif %}>
+                                {{ d.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4 form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Designation</span>
+                        </label>
+                        <input type="text" name="designation" class="form-control form-control-custom"
+                               value="{{ emp.designation }}" placeholder="Employee designation">
+                    </div>
+                    <div class="col-md-4 form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-file-contract"></i>
+                            <span>Employment Type</span>
+                        </label>
+                        <select name="employee_type" class="form-select form-control-custom">
+                            <option value="Permanent" {% if emp.employee_type=='Permanent' %}selected{% endif %}>Permanent</option>
+                            <option value="Contract" {% if emp.employee_type=='Contract' %}selected{% endif %}>Contract</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Joining Date</span>
+                        </label>
+                        <input type="date" name="joining_date" class="form-control form-control-custom" value="{{ emp.join_date }}">
+                    </div>
+                    <div class="col-md-6 form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-money-check-alt"></i>
+                            <span>Salary (PKR)</span>
+                        </label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text">Rs.</span>
+                            <input type="text" name="salary" class="form-control form-control-custom"
+                                   value="{{ emp.salary }}" placeholder="Monthly salary">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information Section -->
+                <div class="section-divider">
+                    <h5><i class="fas fa-address-book"></i> Contact Information</h5>
+                    <div class="divider-line"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-group-custom">
+                        <label class="form-label-custom">
+                            <span>Email Address</span>
+                            <span class="required">*</span>
+                        </label>
+                        <input type="email" name="email" class="form-control form-control-custom"
+                               value="{{ emp.email }}" required placeholder="employee@company.com">
+                    </div>
+                    <div class="col-md-6 form-group-custom">
+                        <label class="form-label-custom">
+                            <span>Phone Number</span>
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" name="phone" class="form-control form-control-custom"
+                               value="{{ emp.phone }}" required placeholder="+92 XXX XXXXXXX">
+                    </div>
+                    <div class="col-12 form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Residential Address</span>
+                        </label>
+                        <textarea name="address" class="form-control form-control-custom"
+                                  rows="3" placeholder="Complete residential address...">{{ emp.address }}</textarea>
+                    </div>
+                </div>
+
+                <!-- Information Notice -->
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <p class="mb-0">
+                        <strong>Note:</strong> Fields marked with <span class="required">*</span> are required.
+                        Employee Code cannot be modified.
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="btn-action-group">
+                    <a href="{{ url_for('employees') }}" class="btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn-update">
+                        <i class="fas fa-save"></i> Update Employee
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Optional: Add some JavaScript for form validation and enhancements -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format salary input
+        const salaryInput = document.querySelector('input[name="salary"]');
+        if (salaryInput) {
+            salaryInput.addEventListener('blur', function(e) {
+                let value = e.target.value.replace(/,/g, '');
+                if (!isNaN(value) && value !== '') {
+                    e.target.value = new Intl.NumberFormat().format(value);
+                }
+            });
+        }
+
+        // Add floating labels effect
+        const formControls = document.querySelectorAll('.form-control-custom');
+        formControls.forEach(control => {
+            control.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            control.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

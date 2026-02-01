@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceLog | Administrative Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #F8FAFE;
+            color: #1A2B5C;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Unchanged as per your request */
+        .sidebar {
+            width: 240px;
+            background-color: #1A2B5C;
+            color: #FFFFFF;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 25px 0;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 15px;
+        }
+
+            .sidebar-menu li {
+                margin-bottom: 8px;
+            }
+
+            .sidebar-menu a {
+                color: rgba(255, 255, 255, 0.85);
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                padding: 14px 15px;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+
+                .sidebar-menu a:hover, .sidebar-menu a.active {
+                    background-color: #3A7BFF;
+                    color: #FFFFFF;
+                }
+
+                .sidebar-menu a.logout {
+                    margin-top: 30px;
+                    background-color: rgba(220, 38, 38, 0.1);
+                    color: #FCA5A5;
+                }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 240px;
+            flex: 1;
+            padding: 40px;
+        }
+
+        /* NEW: Professional Main Heading Styling */
+        .main-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #E8ECF5;
+        }
+
+        .header-title-area h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1A2B5C;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .header-title-area h1 i {
+                color: #3A7BFF;
+                font-size: 24px;
+            }
+
+        .header-title-area p {
+            color: #64748B;
+            font-size: 14px;
+            margin-top: 5px;
+            margin-left: 40px;
+        }
+
+        .admin-badge {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Compact 2x2 Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .menu-card {
+            background-color: #FFFFFF;
+            border-radius: 20px;
+            padding: 35px 25px;
+            text-align: left;
+            text-decoration: none !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            border: 1px solid #EDF2F7;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+            .menu-card:hover {
+                transform: translateY(-5px);
+                border-color: #3A7BFF;
+                box-shadow: 0 12px 25px rgba(58, 123, 255, 0.1);
+            }
+
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: #F0F4FF;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+            .icon-circle i {
+                font-size: 24px;
+                color: #3A7BFF;
+            }
+
+        .card-text h3 {
+            color: #1A2B5C;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-text p {
+            color: #64748B;
+            font-size: 13px;
+        }
+
+        .menu-card:hover .icon-circle {
+            background: #3A7BFF;
+        }
+
+            .menu-card:hover .icon-circle i {
+                color: #FFFFFF;
+            }
+
+        @media (max-width: 992px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">
+                <i class="fas fa-user-shield"></i>
+                <span>Admin Panel</span>
+            </div>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{{ url_for('dashboard') }}" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="{{ url_for('attendance_summary') }}"><i class="fas fa-calendar-check"></i> Attendance Overview</a></li>
+            <li><a href="{{ url_for('departments') }}"><i class="fas fa-building"></i> Departments</a></li>
+            <li><a href="{{ url_for('employees') }}"><i class="fas fa-users"></i> Employees</a></li>
+            <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-bar"></i> Reports</a></li>
+            <li><a href="{{ url_for('logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="main-page-header">
+            <div class="header-title-area">
+                <h1><i class="fas fa-chart-line"></i> Workplace AI Attendance System</h1>
+                <p>Welcome back, Administrator. Manage your workplace efficiency from here.</p>
+            </div>
+            <div class="admin-badge">
+                <div style="text-align: right;">
+                    <div style="font-weight: 700; font-size: 14px;">System Admin</div>
+                    <div style="font-size: 11px; color: #64748B;">Active Now</div>
+                </div>
+                <div style="width: 35px; height: 35px; background: #3A7BFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">A</div>
+            </div>
+        </div>
+
+        <div class="menu-grid">
+            <a href="{{ url_for('attendance_summary') }}" class="menu-card">
+                <div class="icon-circle"><i class="fas fa-clipboard-user"></i></div>
+                <div class="card-text">
+                    <h3>Attendance</h3>
+                    <p>View daily logs and summaries</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('departments') }}" class="menu-card">
+                <div class="icon-circle"><i class="fas fa-sitemap"></i></div>
+                <div class="card-text">
+                    <h3>Departments</h3>
+                    <p>Manage office wings and units</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('employees') }}" class="menu-card">
+                <div class="icon-circle"><i class="fas fa-user-group"></i></div>
+                <div class="card-text">
+                    <h3>Employees</h3>
+                    <p>Staff directory and profiles</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('reports') }}" class="menu-card">
+                <div class="icon-circle"><i class="fas fa-file-invoice"></i></div>
+                <div class="card-text">
+                    <h3>Report Center</h3>
+                    <p>Generate and export data</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workplace AI Attendance System | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Faster alternating animations */
+        @keyframes slideName {
+            0%, 5% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            40%, 50% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            51%, 100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideQuote {
+            0%, 40% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            50%, 90% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            95%, 100% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+
+        .background-poster {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.25;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .main-content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.25);
+        }
+
+        .slide-container {
+            position: relative;
+            overflow: hidden;
+            height: 4rem;
+            background-color: #001e3c;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+        }
+
+        .slide-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+        }
+
+            .slide-text.name {
+                animation: slideName 20s infinite;
+                background: linear-gradient(to right, #003f91, #005fa3);
+                text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+            }
+
+            .slide-text.quote {
+                animation: slideQuote 20s infinite;
+                font-size: 1rem;
+                font-weight: 400;
+                opacity: 0.9;
+            }
+
+        .footer {
+            margin-top: 5rem;
+            text-align: center;
+            color: #555;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <img src="{{ url_for('static', filename='poster4.jpg') }}" class="background-poster">
+
+    <nav class="bg-[#002b5c] text-white flex items-center justify-between px-4 py-3 shadow-lg relative z-20">
+        <button id="sidebarToggle" class="text-2xl font-bold hover:text-gray-300 transition duration-150">☰</button>
+        <h1 class="text-xl font-semibold tracking-wide">Workplace AI Attendance System</h1>
+        <span id="datetimeDisplay" class="text-sm"></span>
+    </nav>
+
+    <div class="slide-container">
+        <div class="slide-text name">🌐 WORKPLACE AI ATTENDANCE SYSTEM — SECURE FACE RECOGNITION PLATFORM 🌐</div>
+        <div class="slide-text quote" id="quoteDisplay">Loading quote...</div>
+    </div>
+
+    <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-[#001e3c] text-white transform -translate-x-full z-50">
+        <div class="p-5 font-bold text-2xl border-b border-gray-700">Portal Menu</div>
+        <ul class="space-y-2 p-4 text-lg">
+            <li><a href="{{ url_for('employee_dashboard') }}" class="block p-2 rounded hover:bg-[#003f91] transition">🏠 Dashboard Home</a></li>
+            <li><a href="{{ url_for('mark_attendance') }}" class="block p-2 rounded hover:bg-[#003f91] transition">📸 Mark Attendance</a></li>
+            <li><a href="{{ url_for('department_info') }}" class="block p-2 rounded hover:bg-[#003f91] transition">🏢 Department Info</a></li>
+            <li><a href="{{ url_for('employee_summary') }}" class="block p-2 rounded hover:bg-[#003f91] transition">📊 Attendance Summary</a></li>
+            <li><a href="{{ url_for('help_center') }}" class="block p-2 rounded hover:bg-[#003f91] transition">🆘 Help Center</a></li>
+            <li><a href="{{ url_for('logout') }}" class="block p-2 rounded hover:bg-[#4d1a1a] text-red-300 transition">🚪 Logout</a></li>
+        </ul>
+        <div class="absolute bottom-3 w-full text-center text-xs text-gray-400">Version 1.1.0</div>
+    </div>
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+    <div class="main-content-wrapper p-10 text-center">
+        <h2 class="text-4xl font-extrabold text-[#002b5c] mb-8 drop-shadow-md">Welcome to the Portal</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <a href="{{ url_for('mark_attendance') }}" class="block bg-white/90 p-6 rounded-xl shadow-xl hover:scale-[1.03] hover:shadow-2xl border-b-4 border-green-500 backdrop-blur-sm transition">
+                <div class="text-4xl mb-4 text-green-600">📸</div>
+                <h3 class="text-xl font-bold mb-1 text-gray-800">Mark Attendance</h3>
+                <p class="text-gray-600 text-sm">Check-In or Check-Out using face recognition.</p>
+            </a>
+
+            <a href="{{ url_for('employee_summary') }}" class="block bg-white/90 p-6 rounded-xl shadow-xl hover:scale-[1.03] hover:shadow-2xl border-b-4 border-yellow-500 backdrop-blur-sm transition">
+                <div class="text-4xl mb-4 text-yellow-600">📊</div>
+                <h3 class="text-xl font-bold mb-1 text-gray-800">View Summary</h3>
+                <p class="text-gray-600 text-sm">Review your attendance records.</p>
+            </a>
+
+            <a href="{{ url_for('department_info') }}" class="block bg-white/90 p-6 rounded-xl shadow-xl hover:scale-[1.03] hover:shadow-2xl border-b-4 border-blue-500 backdrop-blur-sm transition">
+                <div class="text-4xl mb-4 text-blue-600">🏢</div>
+                <h3 class="text-xl font-bold mb-1 text-gray-800">Department Updates</h3>
+                <p class="text-gray-600 text-sm">See latest notices and HR info.</p>
+            </a>
+        </div>
+        <div class="footer">© LA Products (AI Attendance System). All Rights Reserved.</div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        document.getElementById('sidebarToggle').onclick = () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        };
+        overlay.onclick = () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        };
+
+        // Rotating quotes
+        const quotes = [
+            "“The only way to do great work is to love what you do.” — Steve Jobs",
+            "“Believe you can and you're halfway there.” — Theodore Roosevelt",
+            "“Strive not to be a success, but rather to be of value.” — Albert Einstein",
+            "“Excellence is not an act, but a habit.” — Aristotle",
+            "“Hard work beats talent when talent doesn't work hard.” — Tim Notke",
+            "“Push yourself because no one else is going to do it for you.”",
+            "“Success doesn’t just find you. You have to go out and get it.”"
+        ];
+        let quoteIndex = 0;
+        const quoteDisplay = document.getElementById('quoteDisplay');
+        function updateQuote() {
+            quoteDisplay.textContent = quotes[quoteIndex];
+            quoteIndex = (quoteIndex + 1) % quotes.length;
+        }
+        setInterval(updateQuote, 20000);
+        updateQuote();
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+            const date = now.toLocaleDateString('en-US', options);
+            const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('datetimeDisplay').textContent = `${date} | ${time}`;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+    </script>
+</body>
+</html>

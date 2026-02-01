@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Attendance System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f4f7fe;
+        }
+
+        /* Toggle Switch Styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 64px;
+            height: 32px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 24px;
+                width: 24px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+
+        input:checked + .slider {
+            background-color: #3A7BFF;
+        }
+
+            input:checked + .slider:before {
+                transform: translateX(32px);
+            }
+
+        .video-container {
+            border: 4px solid #48bb78;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+        }
+
+        /* Success/Warning modal inner styles to match your images */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 4px;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .info-value {
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .status-box {
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-xl w-full bg-white p-8 rounded-3xl shadow-xl text-center">
+        <h1 class="text-2xl font-extrabold text-blue-900 mb-6">Face Attendance System</h1>
+
+        <div class="flex items-center justify-center gap-4 mb-6 font-semibold text-gray-700">
+            <span id="checkInLabel" class="text-blue-600">Check In</span>
+            <label class="switch">
+                <input type="checkbox" id="attendanceType">
+                <span class="slider"></span>
+            </label>
+            <span id="checkOutLabel">Check Out</span>
+        </div>
+
+        <div class="video-container mb-6 aspect-video">
+            <video id="videoElement" autoplay playsinline class="w-full h-full object-cover"></video>
+            <canvas id="canvasElement" class="hidden"></canvas>
+        </div>
+
+        <button id="captureButton" class="w-full bg-[#48bb78] hover:bg-[#38a169] text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95 text-lg">
+            MARK ATTENDANCE
+        </button>
+
+        <div id="statusMessage" class="mt-6 p-3 bg-green-50 text-green-700 rounded-xl border border-green-200 text-sm font-medium">
+            Camera Ready. Click to Mark Attendance.
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('videoElement');
+        const canvas = document.getElementById('canvasElement');
+        const captureButton = document.getElementById('captureButton');
+        const statusMessage = document.getElementById('statusMessage');
+        const attendanceToggle = document.getElementById('attendanceType');
+
+        // Toggle label colors
+        attendanceToggle.addEventListener('change', () => {
+            const isCheckOut = attendanceToggle.checked;
+            document.getElementById('checkInLabel').classList.toggle('text-blue-600', !isCheckOut);
+            document.getElementById('checkOutLabel').classList.toggle('text-blue-600', isCheckOut);
+        });
+
+        // Start Camera
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (err) {
+                statusMessage.textContent = "❌ Camera access denied.";
+                statusMessage.className = "mt-6 p-3 bg-red-50 text-red-700 rounded-xl border border-red-200 text-sm font-medium";
+            }
+        }
+
+        // Show Result Popup (Success or Warning)
+        function showResultPopup(data, type) {
+            const isSuccess = data.status === 'success';
+            const themeColor = isSuccess ? '#48bb78' : '#d69e2e';
+            const lightBg = isSuccess ? '#f0fff4' : '#fffaf0';
+            const title = isSuccess ? 'SUCCESS' : 'NOTICE';
+
+            Swal.fire({
+                html: `
+                        <div class="text-left">
+                            <div class="flex items-center gap-2 mb-4">
+                                <h2 style="color:${themeColor}; font-size: 1.5rem; font-weight: 800; letter-spacing: 1px;">${isSuccess ? '✅ ' + title : '⚠️ ' + title}</h2>
+                            </div>
+                            <div class="info-row"><span class="info-label">Status:</span><span class="info-value" style="color:${themeColor}">${isSuccess ? 'SUCCESS' : 'WARNING'}</span></div>
+                            <div class="info-row"><span class="info-label">Employee ID:</span><span class="info-value">${data.emp_id}</span></div>
+                            <div class="info-row"><span class="info-label">Name:</span><span class="info-value">${data.name}</span></div>
+                            <div class="info-row"><span class="info-label">Time:</span><span class="info-value">${data.time}</span></div>
+                            <div class="status-box" style="background:${lightBg}; color:${themeColor}; border: 1px solid ${themeColor}44;">
+                                ${isSuccess ? '✅ ' + type + ' Successful' : '⚠️ ' + data.name + ' already ' + type + ' at ' + data.marked_time}
+                            </div>
+                        </div>
+                    `,
+                showCloseButton: true,
+                confirmButtonText: 'OK',
+                confirmButtonColor: themeColor,
+                customClass: { popup: 'rounded-3xl' }
+            });
+        }
+
+        captureButton.addEventListener('click', async () => {
+            const type = attendanceToggle.checked ? 'Check-Out' : 'Check-In';
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+
+            const imageData = canvas.toDataURL('image/png');
+
+            captureButton.disabled = true;
+            captureButton.textContent = "PROCESSING...";
+
+            try {
+                const response = await fetch('/api/mark_attendance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        img_data: imageData,
+                        attendance_type: type
+                    })
+                });
+
+                const result = await response.json();
+                showResultPopup(result, type);
+
+            } catch (error) {
+                console.error('API Error:', error);
+                Swal.fire('Error', 'Network or Server issue', 'error');
+            } finally {
+                captureButton.disabled = false;
+                captureButton.textContent = "MARK ATTENDANCE";
+            }
+        });
+
+        window.onload = startCamera;
+    </script>
+</body>
+</html>

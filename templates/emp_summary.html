@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Summary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6fb;
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-6xl mx-auto bg-white p-8 rounded-xl shadow-2xl">
+        <h1 class="text-3xl font-bold mb-6 text-green-700 text-center">📊 Historical Attendance Log</h1>
+
+        <div id="loading" class="text-center p-4 text-lg text-gray-500">Loading attendance data...</div>
+
+        <div id="logContainer" class="space-y-6 hidden">
+        </div>
+
+        <div id="noData" class="text-center p-8 text-xl text-red-500 hidden">
+            No attendance records found yet.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', fetchAttendanceLog);
+
+        async function fetchAttendanceLog() {
+            const logContainer = document.getElementById('logContainer');
+            const loading = document.getElementById('loading');
+            const noData = document.getElementById('noData');
+
+            loading.classList.remove('hidden');
+            logContainer.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/attendance_log');
+                const log = await response.json();
+
+                loading.classList.add('hidden');
+
+                const dates = Object.keys(log).sort().reverse();
+
+                if (dates.length === 0) {
+                    noData.classList.remove('hidden');
+                    return;
+                }
+
+                logContainer.classList.remove('hidden');
+
+                dates.forEach(date => {
+                    const dailyLog = log[date];
+
+                    // Date Header
+                    const dateHeader = document.createElement('h2');
+                    dateHeader.className = 'text-2xl font-extrabold text-blue-800 border-b-2 border-blue-200 pb-2 mt-8';
+                    dateHeader.textContent = `📅 Log for ${date}`;
+                    logContainer.appendChild(dateHeader);
+
+                    // Table Construction
+                    const table = document.createElement('table');
+                    table.className = 'min-w-full bg-white border-collapse rounded-lg overflow-hidden shadow-lg mt-4';
+                    table.innerHTML = `
+                            <thead class="bg-gray-200">
+                                <tr class="text-left text-gray-700">
+                                    <th class="py-3 px-4">Employee</th>
+                                    <th class="py-3 px-4">Department</th>
+                                    <th class="py-3 px-4">Check-In</th>
+                                    <th class="py-3 px-4">Check-Out</th>
+                                    <th class="py-3 px-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody-${date}"></tbody>
+                        `;
+                    logContainer.appendChild(table);
+
+                    const tableBody = document.getElementById(`tableBody-${date}`);
+
+                    // Row Injection Logic
+                    Object.keys(dailyLog).forEach(empId => {
+                        const entry = dailyLog[empId];
+                        const row = tableBody.insertRow();
+
+                        // Dynamic Status Styling
+                        const isCheckedOut = entry.check_out && entry.check_out !== '--:--';
+                        const statusClass = isCheckedOut ? 'text-green-600 font-bold' : 'text-yellow-600 font-bold';
+                        const statusLabel = isCheckedOut ? 'Checked Out' : 'Present';
+
+                        row.innerHTML = `
+                                <td class="py-3 px-4 border-b border-gray-100 font-medium">
+                                    ${entry.name} <span class="text-xs text-gray-400 block">(${empId})</span>
+                                </td>
+                                <td class="py-3 px-4 border-b border-gray-100 text-gray-600">${entry.department}</td>
+                                <td class="py-3 px-4 border-b border-gray-100">
+                                    <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded text-sm font-semibold border border-blue-100">${entry.check_in}</span>
+                                </td>
+                                <td class="py-3 px-4 border-b border-gray-100">
+                                    <span class="bg-purple-50 text-purple-700 px-2 py-1 rounded text-sm font-semibold border border-purple-100">${entry.check_out}</span>
+                                </td>
+                                <td class="py-3 px-4 border-b border-gray-100">
+                                    <span class="${statusClass}">${statusLabel}</span>
+                                </td>
+                            `;
+                    });
+                });
+
+            } catch (error) {
+                console.error('Error fetching log:', error);
+                loading.classList.add('hidden');
+                noData.classList.remove('hidden');
+                noData.textContent = '❌ Failed to connect to the server.';
+            }
+        }
+    </script>
+</body>
+</html>

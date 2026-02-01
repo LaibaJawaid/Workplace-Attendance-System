@@ -1,0 +1,226 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<style>
+    :root {
+        --navy: #0a192f;
+        --blue-accent: #007bff;
+        --white: #ffffff;
+        --light-bg: #f4f7f6;
+        --green-accent: #28a745; /* New color for attendance */
+    }
+
+    .report-container {
+        padding: 40px 20px;
+        background-color: var(--light-bg);
+        min-height: 100vh;
+    }
+
+    .page-title {
+        color: var(--navy);
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .dept-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .dept-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(10, 25, 47, 0.05);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .dept-card:hover {
+            transform: translateY(-10px);
+            background-color: var(--navy);
+            box-shadow: 0 15px 30px rgba(10, 25, 47, 0.2);
+        }
+
+    /* Attendance card specific color */
+    .attendance-card i {
+        color: var(--green-accent) !important;
+    }
+
+    .dept-card i {
+        font-size: 40px;
+        color: var(--blue-accent);
+        margin-bottom: 20px;
+        transition: 0.3s;
+    }
+
+    .dept-card h3 {
+        font-size: 20px;
+        color: var(--navy);
+        font-weight: 700;
+        margin-bottom: 25px;
+        transition: 0.3s;
+    }
+
+    .dept-card:hover h3, .dept-card:hover i {
+        color: var(--white);
+    }
+
+    .download-trigger {
+        background: var(--navy);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .dept-card:hover .download-trigger {
+        background: var(--blue-accent);
+    }
+
+    #reportModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 25, 47, 0.6);
+        backdrop-filter: blur(8|px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .mini-card {
+        background: white;
+        padding: 40px;
+        border-radius: 25px;
+        width: 90%;
+        max-width: 450px;
+        text-align: center;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .modal-btn-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .btn-confirm {
+        background: var(--navy);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 12px;
+        border: none;
+        font-weight: 600;
+    }
+
+    .btn-cancel {
+        background: #eee;
+        color: #333;
+        padding: 12px 30px;
+        border-radius: 12px;
+        border: none;
+    }
+</style>
+
+<div class="report-container">
+    <h2 class="page-title"><i class="fas fa-chart-pie me-2"></i> Report Center</h2>
+
+    <div class="dept-grid">
+        <div class="dept-card attendance-card" onclick="confirmDownload('Attendance_All')">
+            <i class="fas fa-calendar-check"></i>
+            <h3>Attendance Report (All)</h3>
+            <button class="download-trigger">Select</button>
+        </div>
+
+        <div class="dept-card" onclick="confirmDownload('All')">
+            <i class="fas fa-users-cog"></i>
+            <h3>All Staff Full Data</h3>
+            <button class="download-trigger">Select</button>
+        </div>
+
+        {% for dept in departments %}
+        <div class="dept-card" onclick="confirmDownload('{{ dept.name }}')">
+            <i class="fas fa-building"></i>
+            <h3>{{ dept.name }}</h3>
+            <button class="download-trigger">Select</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="reportModal">
+    <div class="mini-card">
+        <div style="font-size: 50px; color: var(--blue-accent); margin-bottom: 15px;">
+            <i class="fas fa-file-csv"></i>
+        </div>
+        <h4>Ready to Download?</h4>
+        <p id="modalMsg"></p>
+
+        <form action="{{ url_for('download_report') }}" method="POST">
+            <input type="hidden" name="department" id="hiddenDept">
+            <div class="modal-btn-group">
+                <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn-confirm" onclick="closeModal()">Download Now</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function confirmDownload(deptName) {
+        const modal = document.getElementById('reportModal');
+        const hiddenInput = document.getElementById('hiddenDept');
+        const msg = document.getElementById('modalMsg');
+
+        hiddenInput.value = deptName;
+
+        if (deptName === 'Attendance_All') {
+            msg.innerHTML = "Generate <strong>Attendance Only</strong> report for all staff?";
+        } else {
+            msg.innerHTML = `Generate CSV report for <strong>${deptName}</strong>?`;
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('reportModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function (event) {
+        if (event.target == document.getElementById('reportModal')) {
+            closeModal();
+        }
+    }
+</script>
+{% endblock %}

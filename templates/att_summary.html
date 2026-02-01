@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Summary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .accordion-content {
+            transition: max-height 0.4s ease-in-out;
+            overflow: hidden;
+            max-height: 0;
+        }
+
+            .accordion-content.open {
+                max-height: 3000px;
+            }
+
+        .rotate-icon {
+            transition: transform 0.3s;
+        }
+
+            .rotate-icon.active {
+                transform: rotate(180deg);
+            }
+    </style>
+</head>
+<body class="bg-slate-100 p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-center mb-8 bg-[#0f172a] p-6 rounded-2xl shadow-lg text-white">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">📊 Administrative Summary</h1>
+                <p class="text-slate-400 text-sm">Real-time departmental attendance monitoring</p>
+            </div>
+            <a href="/dashboard" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm transition">Back Home</a>
+        </div>
+
+        <div id="statsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        </div>
+
+        <div id="mainContainer" class="space-y-6">
+            <div id="loading" class="text-center py-20 text-slate-500 font-medium">
+                <i class="fas fa-circle-notch fa-spin mr-2"></i> Syncing departmental records...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', fetchAttendance);
+
+        async function fetchAttendance() {
+            try {
+                const res = await fetch('/api/attendance_log');
+                const data = await res.json();
+                const container = document.getElementById('mainContainer');
+                const statsGrid = document.getElementById('statsGrid');
+
+                const dates = Object.keys(data).sort().reverse();
+                if (dates.length === 0) {
+                    document.getElementById('loading').innerHTML = "No records found today.";
+                    return;
+                }
+
+                container.innerHTML = '';
+                const latestDate = dates[0];
+                let totalOffice = 0, presentOffice = 0;
+
+                const dateData = data[latestDate];
+                const depts = {};
+
+                // Loop through data and include the ID (code)
+                Object.entries(dateData).forEach(([code, emp]) => {
+                    totalOffice++;
+                    if (emp.status !== 'Absent') presentOffice++;
+
+                    if (!depts[emp.department]) depts[emp.department] = { present: [], absent: [] };
+
+                    // Hum ID (code) ko employee object mein daal rahe hain taake display kar saken
+                    const empWithId = { ...emp, id: code };
+
+                    if (emp.status === 'Absent') depts[emp.department].absent.push(empWithId);
+                    else depts[emp.department].present.push(empWithId);
+                });
+
+                // Set Top Stats
+                statsGrid.innerHTML = `
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-[#0f172a]">
+                        <p class="text-xs font-bold text-slate-400 uppercase">Total Workforce</p>
+                        <h2 class="text-3xl font-black text-[#0f172a]">${totalOffice}</h2>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-green-500">
+                        <p class="text-xs font-bold text-slate-400 uppercase">Current Present</p>
+                        <h2 class="text-3xl font-black text-green-600">${presentOffice}</h2>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-red-500">
+                        <p class="text-xs font-bold text-slate-400 uppercase">Current Absent</p>
+                        <h2 class="text-3xl font-black text-red-600">${totalOffice - presentOffice}</h2>
+                    </div>
+                `;
+
+                // Render Department Accordions
+                Object.entries(depts).forEach(([name, lists]) => {
+                    const totalDept = lists.present.length + lists.absent.length;
+                    const section = document.createElement('div');
+                    section.className = "bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden";
+                    section.innerHTML = `
+                        <button onclick="this.nextElementSibling.classList.toggle('open'); this.querySelector('.rotate-icon').classList.toggle('active')"
+                                class="w-full flex justify-between items-center p-5 hover:bg-slate-50 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-[#0f172a] text-white rounded-lg flex items-center justify-center font-bold">${name[0]}</div>
+                                <div class="text-left">
+                                    <h3 class="font-bold text-[#0f172a]">${name}</h3>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase">Headcount: ${totalDept}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="text-[11px] font-bold hidden md:block">
+                                    <span class="text-green-600 bg-green-50 px-2 py-1 rounded">P: ${lists.present.length}</span>
+                                    <span class="text-red-600 bg-red-50 px-2 py-1 rounded ml-2">A: ${lists.absent.length}</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-slate-300 rotate-icon"></i>
+                            </div>
+                        </button>
+                        <div class="accordion-content bg-slate-50/50">
+                            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-slate-100">
+                                <div>
+                                    <h4 class="text-[11px] font-bold text-green-600 uppercase mb-3 flex items-center gap-2">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Present Members
+                                    </h4>
+                                    <div class="space-y-2">
+                                        ${lists.present.length > 0 ? lists.present.map(e => `
+                                            <div class="bg-white p-3 rounded-lg border border-slate-100 flex justify-between items-center shadow-sm">
+                                                <span class="text-sm font-medium text-slate-700">${e.name} <small class="text-slate-400 ml-1">#${e.id}</small></span>
+                                                <span class="text-[10px] text-slate-400">${e.check_in}</span>
+                                            </div>
+                                        `).join('') : '<p class="text-xs text-slate-400 italic">No one present</p>'}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-[11px] font-bold text-red-500 uppercase mb-3 flex items-center gap-2">
+                                        <span class="w-2 h-2 bg-red-500 rounded-full"></span> Absent Members
+                                    </h4>
+                                    <div class="space-y-2">
+                                        ${lists.absent.length > 0 ? lists.absent.map(e => `
+                                            <div class="bg-white p-3 rounded-lg border border-slate-100 flex justify-between items-center opacity-70">
+                                                <span class="text-sm font-medium text-slate-500">${e.name} <small class="text-slate-400 ml-1">#${e.id}</small></span>
+                                                <span class="text-[9px] font-bold text-red-400 bg-red-50 px-2 py-0.5 rounded">ABSENT</span>
+                                            </div>
+                                        `).join('') : '<p class="text-xs text-slate-400 italic">Everyone is present</p>'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(section);
+                });
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading').innerHTML = "Failed to connect to the server.";
+            }
+        }
+    </script>
+</body>
+
+
+</html>

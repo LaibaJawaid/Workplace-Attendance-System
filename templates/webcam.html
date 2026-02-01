@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6fb;
+        }
+        /* Add basic animation for the pulsing border */
+        @keyframes pulseBorder {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+        }
+
+        .video-box {
+            border: 4px solid #4CAF50;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .pulsing-border {
+            animation: pulseBorder 2s infinite;
+        }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-2xl">
+        <h1 class="text-3xl font-bold mb-6 text-blue-800 text-center">Face Recognition Attendance</h1>
+
+        <!-- Video and Canvas Container -->
+        <div class="flex flex-col items-center space-y-4">
+            <div class="video-box w-full max-w-md">
+                <video id="videoElement" autoplay playsinline class="w-full rounded-xl"></video>
+            </div>
+
+            <canvas id="canvasElement" style="display:none;"></canvas>
+
+            <button id="captureButton"
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition duration-150 hover:scale-[1.05] pulsing-border text-lg flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>MARK ATTENDANCE</span>
+            </button>
+        </div>
+
+        <!-- Status Message Box -->
+        <div id="statusMessage" class="mt-8 p-4 bg-blue-100 border-l-4 border-blue-500 text-blue-700 rounded-lg text-center font-medium">
+            Waiting for camera feed...
+        </div>
+
+        <div id="loadingIndicator" class="mt-4 hidden text-center">
+            <p class="text-xl text-yellow-600 font-semibold">Processing image, please wait...</p>
+        </div>
+
+        <p class="text-xs text-gray-500 mt-6 text-center">Ensure clear lighting and face visibility for best results.</p>
+    </div>
+
+    <script>
+        const video = document.getElementById('videoElement');
+        const canvas = document.getElementById('canvasElement');
+        const captureButton = document.getElementById('captureButton');
+        const statusMessage = document.getElementById('statusMessage');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const context = canvas.getContext('2d');
+
+        // --- Start Camera Stream ---
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    video.play();
+                    statusMessage.textContent = "Camera Ready. Click to Mark Attendance.";
+                    statusMessage.className = 'mt-8 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-lg text-center font-medium';
+                };
+            } catch (err) {
+                statusMessage.textContent = "❌ ERROR: Could not access camera. Please check permissions.";
+                statusMessage.className = 'mt-8 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-lg text-center font-medium';
+                console.error("Error accessing camera: ", err);
+                captureButton.disabled = true;
+                captureButton.classList.add('opacity-50');
+            }
+        }
+
+        // --- Capture and Send Data ---
+        captureButton.addEventListener('click', async () => {
+
+            // Set canvas size to video size
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            if (canvas.width === 0 || canvas.height === 0) {
+                 statusMessage.textContent = "❌ ERROR: Video stream is not active yet.";
+                 return;
+            }
+
+            // Draw the current video frame onto the canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Get image data as base64 encoded PNG
+            const imageData = canvas.toDataURL('image/png');
+
+            // UI Feedback
+            captureButton.disabled = true;
+            captureButton.classList.add('opacity-50');
+            captureButton.classList.remove('pulsing-border');
+            loadingIndicator.classList.remove('hidden');
+
+            try {
+                const response = await fetch('/api/mark_attendance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image_data: imageData })
+                });
+
+                const result = await response.json();
+
+                // Update message box based on result
+                statusMessage.textContent = result.message || "Unknown error occurred.";
+
+                if (result.status === 'matched') {
+                    statusMessage.className = 'mt-8 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-lg text-center font-medium';
+                } else if (result.status === 'unmatched' || result.status === 'error') {
+                    statusMessage.className = 'mt-8 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-lg text-center font-medium';
+                }
+
+            } catch (error) {
+                console.error('API Error:', error);
+                statusMessage.textContent = '❌ Network Error or server issue.';
+                statusMessage.className = 'mt-8 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-lg text-center font-medium';
+            } finally {
+                // Reset UI
+                captureButton.disabled = false;
+                captureButton.classList.remove('opacity-50');
+                captureButton.classList.add('pulsing-border');
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+
+        // Start camera when the page loads
+        window.onload = startCamera;
+
+    </script>
+
+</body>
+</html>
