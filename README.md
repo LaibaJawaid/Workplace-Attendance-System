@@ -40,10 +40,10 @@ WORKPLACE_ATTENDANCE_SYSTEM/
 - ├── dataset/ Employee face datasets
 
 - │ └── emp_<name>/ # Multiple face images per employee
-- │
+  
 - ├── templates/ All HTML files
 - ├── static/ CSS / JS/assets
-- │
+
 - ├── app.py - Main Flask app
 - ├── db.py - Database connection logic
 - ├── create_db.py - Database initialization
@@ -54,7 +54,7 @@ WORKPLACE_ATTENDANCE_SYSTEM/
 - ├── update_emp.py - Employee update logic
 - ├── check_db.py - DB debugging utility
 - ├── test.py - Testing scripts
-- │
+
 - ├── haarcascade_frontalface_default.xml
 - ├── Employee List face sys.csv
 - └── temp_capture.jpg
